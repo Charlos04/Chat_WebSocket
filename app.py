@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash #importa el html, la solicitud para obtener los datos del formulario, la sesión para guardar los datos del usuario, redireccionar a otra página, url_for para generar URLs y flash para mostrar mensajes de error o éxito
 from flask_socketio import SocketIO, emit, join_room, leave_room # SocketIO para la comunicación en tiempo real, emit para enviar mensajes a los clientes, join_room y leave_room para manejar las salas de chat
 import os # Para nuestra llave secreta, debido a seguridad
-import threading
+import threading # Para manejar tareas pesadas en hilos separados y no bloquear el servidor
 
 #Inicializamos la aplicación
 app = Flask(__name__) #llama el underscore para crear la aplicación Flask y dónde buscar información
@@ -103,23 +103,30 @@ def chat():
     return render_template('chat.html', usuario=session['usuario'], sala=session['sala']) #renderiza la página de chat y pasa el nombre de usuario y la sala a la plantilla
 
 #socketIO events
-@socketio.on('join') #evento para unirse a una sala
+@socketio.on('join') # Evento que se activa cuando un usuario entra
 def unirse(data):
-    usuario = data['usuario'] #obtiene el nombre de usuario del evento
-    sala = data['sala'] #obtiene el nombre de la sala del evento
-
-    # Guardamos al usuario en nuestro registro global usando el ID de sesión único
-    usuarios_conectados[request.sid] = {'usuario': usuario, 'sala': sala}
-    join_room(sala) #une al usuario a la sala
-
-    emit('status', {'msg': f'{usuario} se ha unido a la sala', ' type': 'info'}, to = sala) #envía un mensaje a la sala indicando que el usuario se ha unido
+    usuario = data['usuario'] # Extraemos el nombre de usuario del paquete de datos
+    sala = data['sala'] # Extraemos el nombre de la sala
+    peer_id = data.get('peerId') # NUEVO: Extraemos el ID único de video de PeerJS (puede ser None si falla)
     
-    #Enviamos la lista actualizada de usuarios a TODOS en la sala
-    # Filtramos solo los usuarios de ESTA sala
+    # Guardamos al usuario en el diccionario global usando el ID de sesión (request.sid) como clave
+    # Ahora incluimos 'peerId' para saber a quién llamar para el video
+    usuarios_conectados[request.sid] = {'usuario': usuario, 'sala': sala, 'peerId': peer_id}
+    
+    join_room(sala) # Comando de Flask-SocketIO para meter al usuario en la "habitación" virtual
+    
+    # Enviamos un mensaje de sistema a toda la sala avisando que alguien entró
+    emit('status', {'msg': f'{usuario} se ha unido a la sala', 'type': 'info'}, to=sala)
+    
+    # Preparamos la lista de usuarios para actualizar el Grid de videos
+    # Filtramos: solo tomamos los usuarios que están en ESTA sala específica
     lista_usuarios = [u for u in usuarios_conectados.values() if u['sala'] == sala]
+    
+    # Enviamos la lista actualizada a todos en la sala para que pinten los recuadros
     emit('update_users', lista_usuarios, to=sala)
     
-    print(f'{usuario} se ha unido a la sala {sala}') #imprime en la consola que el usuario se ha unido a la sala
+    print(f'{usuario} se ha unido a la sala {sala} con PeerID: {peer_id}') # Log en consola del servidor
+
 
 @socketio.on('leave') #evento para salir de una sala
 def salir(data):
@@ -169,25 +176,31 @@ def page_not_found(e):
 
 @socketio.on('disconnect') #evento que detecta automáticamente cuando se cierra la conexión (cerrar pestaña)
 def desconectar():
-    #Como no recibimos 'data' del cliente al cerrar la pestaña de golpe, usamos la sesión
-    usuario = session.get('usuario') #obtiene el usuario guardado en la sesión
-    sala = session.get('sala') #obtiene la sala guardada en la sesión
+    # Intentamos obtener usuario y sala de la sesión de Flask
+    usuario = session.get('usuario') 
+    sala = session.get('sala') 
 
-    # Eliminamos al usuario del registro global
+    # Verificamos si este usuario estaba registrado en nuestro diccionario de conectados
     if request.sid in usuarios_conectados:
-        del usuarios_conectados[request.sid]
+        del usuarios_conectados[request.sid] # Lo borramos del registro para que no salga en el grid
 
+    # Si teníamos datos de sesión, procedemos a avisar a la sala
     if usuario and sala:
-        leave_room(sala) #sacamos al usuario de la sala a nivel de socket
-        #Usamos tu misma estructura de mensaje de estado
+        leave_room(sala) # Sacamos al usuario de la sala de SocketIO
+        
+        # Avisamos a los demás que se fue (Mensaje de texto en el chat)
         emit('status', {'msg': f'{usuario} ha salido de la sala', 'type': 'warning'}, to=sala)
 
-        # NUEVO: Actualizamos la lista visual para los que se quedan
+        # NUEVO: Volvemos a calcular la lista de usuarios (ya sin el que se fue)
         lista_usuarios = [u for u in usuarios_conectados.values() if u['sala'] == sala]
-        emit('update_users', lista_usuarios, to=sala)
         
-        print(f'{usuario} se ha desconectado de la sala {sala}') #imprime en consola
+        # Enviamos la lista nueva para que se borre su recuadro de video en las pantallas de los demás
+        emit('update_users', lista_usuarios, to=sala)
+
+        print(f'{usuario} se ha desconectado de la sala {sala}') # Log en consola del servidor
 
 #Correr la aplicación
 if __name__ == '__main__':
-    socketio.run(app, debug=True) #ejecuta la aplicación Flask con SocketIO en modo de depuración
+    #socketio.run(app, debug=True) #ejecuta la aplicación Flask con SocketIO en modo de depuración
+    # host='0.0.0.0' permite que otros dispositivos en tu red entren
+    socketio.run(app, debug=True, host='0.0.0.0')
