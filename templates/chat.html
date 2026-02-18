@@ -7,21 +7,45 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class ="contenedorChat">
-        <header>
-            <h1>Chat</h1>
-            <p>Eres: <span id="usuarioPantalla">{{ usuario }}</span> en la sala <span id="salaPantalla">{{ sala }}</span></p> <!-- Muestra el usuario y la sala en la pantalla -->
-            <a href="{{url_for('index')}}" class ="salir">Salir del chat</a>
-        </header>
-
-        <div class="chatDeMensajes" id="chatDeMensajes">
-
+    <p id="usuarioPantalla" style="display:none;">{{ usuario }}</p>
+    <p id="salaPantalla" style="display:none;">{{ sala }}</p>
+    <div class="contenedor-principal">
+        
+        <div class="area-video">
+            <div id="gridUsuarios" class="grid-usuarios">
+                </div>
+            
+            <div class="controles-llamada">
+                <button class="btn-control bloqueo" id="btnMic">🎤</button>
+                <button class="btn-control bloqueo" id="btnCam">📷</button>
+            </div>
         </div>
 
-        <form id="mensajesForm" class="entradaMensajesForm">
-            <input type="text" id="mensajeInput" placeholder="Escribe tu mensaje aquí..." autocomplete="off" autofocus>
-            <button type="submit">Enviar</button>
-        </form>
+        <div class="contenedorChat">
+            <header>
+                <h1>Chat</h1>
+                <a href="{{url_for('index')}}" class="salir">Salir</a>
+            </header>
+
+            <div class="chatDeMensajes" id="chatDeMensajes">
+                </div>
+
+            <form id="mensajesForm" class="entradaMensajesForm">
+                <div class="input-wrapper">
+                    <div id="menuAdjunto" class="menu-desplegable oculto">
+                        <div id="vistaOpciones">
+                            <button type="button" id="btnFoto" class="opcion-menu"><span>📷</span> Foto</button>
+                            <button type="button" id="btnEmojis" class="opcion-menu"><span>😊</span> Emojis</button>
+                        </div>
+                        <div id="vistaEmojis" class="emoji-container oculto"></div>
+                    </div>
+                    <input type="text" id="mensajeInput" placeholder="Escribe algo..." autocomplete="off" autofocus>
+                    <button type="button" id="btnMas" class="boton-mas">+</button>
+                </div>
+                <input type="file" id="inputArchivo" accept="image/*" style="display: none;">
+                <button type="submit">➤</button>
+            </form>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>

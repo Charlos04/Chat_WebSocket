@@ -210,6 +210,302 @@ button[type="submit"]:hover {
     width: 90%;
     max-width: 400px;
 }
+
+/* Wrapper para controlar posiciones */
+.input-wrapper {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+/* Ajuste al input para dar espacio al botón "+" */
+#mensajeInput {
+    padding-right: 45px; /* Espacio para que el texto no tape el botón + */
+    width: 100%;
+}
+
+/* Botón "+" naranja y redondo */
+.boton-mas {
+    position: absolute;
+    right: 10px; /* Pegado a la derecha del input */
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #FF7043;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 0;
+    transition: transform 0.2s;
+    z-index: 10;
+}
+
+.boton-mas:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Ventana Modal (Menú) */
+.menu-desplegable {
+    position: absolute;
+    bottom: 60px; /* Aparece encima del input */
+    left: 0;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 120px;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+/* Clase para ocultar el menú */
+.menu-desplegable.oculto {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+}
+
+/* Opciones del menú (Foto, Emojis) */
+.opcion-menu {
+    background: none;
+    border: none;
+    padding: 10px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.opcion-menu:hover {
+    background-color: #FFF3E0; /* Naranja muy clarito */
+    color: #FF7043;
+}
+
+/* Estilo del contenedor de emojis */
+.emoji-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 emojis por fila */
+    gap: 8px;
+    max-height: 200px; /* Altura máxima */
+    overflow-y: auto; /* Scroll si hay muchos */
+    padding: 5px;
+    width: 220px; /* Un poco más ancho para que quepan */
+}
+
+/* Estilo de cada emoji individual */
+.emoji-item {
+    font-size: 1.4rem;
+    cursor: pointer;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background 0.2s;
+    user-select: none;
+}
+
+.emoji-item:hover {
+    background-color: #FFF9C4; /* Amarillo suave al pasar el mouse */
+    transform: scale(1.2);
+}
+
+/* Ocultar elementos (Clase utilitaria) */
+.oculto {
+    display: none !important;
+}
+
+/* Estilo para las fotos dentro del chat */
+.imagen-chat {
+    max-width: 100%;       /* Que no sea más ancha que la burbuja */
+    max-height: 250px;     /* Altura máxima para no ocupar toda la pantalla */
+    border-radius: 10px;   /* Bordes redondeados bonitos */
+    margin-top: 5px;
+    display: block;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* --- LAYOUT PRINCIPAL (DIVISIÓN PANTALLA) --- */
+.contenedor-principal {
+    display: flex;
+    width: 95%;
+    height: 90vh;
+    gap: 20px;
+    max-width: 1200px;
+}
+
+/* --- SECCIÓN IZQUIERDA (VIDEO) --- */
+.area-video {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Empuja los controles al fondo */
+    height: 100%; /* Ocupa todo el alto disponible del padre */
+    overflow: hidden; /* Evita que se salga el contenido */
+    padding-bottom: 10px; /* Un poco de aire abajo */
+}
+
+.grid-usuarios {
+    display: grid;
+    /* Esto crea columnas automáticas que miden mínimo 200px y máximo lo que sobre */
+   grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: minmax(200px, 1fr); /* Las filas también se adaptan */
+    gap: 15px;
+    width: 100%;
+    height: 100%; /* Ocupa el espacio disponible */
+    overflow-y: auto; /* SCROLL si hay demasiada gente */
+    align-content: center; /* Centra los cuadros verticalmente si son pocos */
+    padding: 10px; /* Para que la sombra no se corte */
+}
+
+/* TARJETAS DE USUARIO (LOS RECUADROS) */
+.tarjeta-usuario {
+    position: relative;
+    border-radius: 20px;
+    /* Quitamos el aspect-ratio fijo para que se estiren y llenen huecos */
+    width: 100%;
+    height: 100%; 
+    min-height: 150px; /* Altura mínima para no verse aplastado */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: transform 0.3s;
+}
+
+/* Efecto hover opcional para que se vea interactivo */
+.tarjeta-usuario:hover {
+    transform: scale(1.02);
+}
+
+/* Colores Pastel (Clases dinámicas) */
+.color-0 { background-color: #D1C4E9; } /* Lila */
+.color-1 { background-color: #D4AF37; } /* Dorado */
+.color-2 { background-color: #FF7043; } /* Naranja */
+.color-3 { background-color: #BBDEFB; } /* Azul claro */
+
+/* Icono central de usuario */
+.avatar-grande {
+    font-size: 4rem;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Iconos de estado (Cámara/Micro tachados) */
+.iconos-estado {
+    position: absolute;
+    top: 15px;
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    opacity: 0.7;
+}
+
+/* Controles flotantes inferiores */
+.controles-llamada {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.8); /* Fondo semitransparente opcional */
+    border-radius: 30px;
+    flex-shrink: 0; /* IMPORTANTE: Esto impide que el grid aplaste los botones */
+}
+
+.btn-control {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-control.bloqueo {
+    background-color: #FF7043; /* Naranja (Desactivado) */
+    color: white;
+}
+
+.btn-control:hover {
+    transform: scale(1.1);
+}
+
+/* --- SECCIÓN DERECHA (CHAT) --- */
+.contenedorChat {
+    flex: 1; /* Ocupa el 30-40% restante */
+    height: 100%;
+    /* Mantenemos tus estilos anteriores pero aseguramos que ocupe el alto */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Responsive para móviles: Columna en vez de Fila */
+@media (max-width: 768px) {
+    .contenedor-principal {
+        flex-direction: column;
+        height: auto;
+    }
+    .area-video {
+        height: 300px;
+    }
+    .grid-usuarios {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* --- ESTILOS DE VIDEO (NUEVO) --- */
+.video-usuario {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Llena el cuadro sin deformar */
+    position: absolute;
+    top: 0; left: 0;
+    border-radius: 20px;
+    z-index: 1; /* Detrás de los iconos */
+    transform: scaleX(-1); /* Efecto espejo */
+}
+
+/* Ocultar avatar cuando hay video */
+.tarjeta-usuario.con-video .avatar-grande,
+.tarjeta-usuario.con-video .nombre-usuario {
+    display: none;
+}
+
+/* Que los iconos se vean sobre el video */
+.iconos-estado {
+    z-index: 10;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+
 .join-form { display: flex; flex-direction: column; gap: 15px; margin-top: 20px;}
 .join-form input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
 .join-form button { background-color: #FF7043; color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;}
+
