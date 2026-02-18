@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class ="contenedorChat">
+        <header>
+            <h1>Chat</h1>
+            <p>Eres: <span id="usuarioPantalla">{{ usuario }}</span> en la sala <span id="salaPantalla">{{ sala }}</span></p> <!-- Muestra el usuario y la sala en la pantalla -->
+            <a href="{{url_for('index')}}" class ="salir">Salir del chat</a>
+        </header>
+
+        <div class="chatDeMensajes" id="chatDeMensajes">
+
+        </div>
+
+        <form id="mensajesForm" class="entradaMensajesForm">
+            <input type="text" id="mensajeInput" placeholder="Escribe tu mensaje aquí..." autocomplete="off" autofocus>
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

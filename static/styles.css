@@ -1,0 +1,215 @@
+/* =========================================
+   Reset y Estilos Generales
+   ========================================= */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #FDFBF0; /* Fondo crema */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* =========================================
+   Contenedor Principal
+   ========================================= */
+.contenedorChat {
+    background-color: #fff;
+    width: 100%;
+    max-width: 500px; /* Un poco más ancho para que quepa bien el texto */
+    height: 90vh;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* =========================================
+   Encabezado (Título y Botón Salir)
+   ========================================= */
+.contenedorChat header {
+    background-color: transparent;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between; /* Título a la izq, Botón a la der */
+    align-items: center;
+    border-bottom: 1px solid #eee; /* Línea sutil separadora */
+}
+
+.contenedorChat header h1 {
+    color: #444;
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Ocultamos el texto de "Eres: Usuario..." para mantenerlo limpio como la imagen, 
+   pero mostramos el botón de salir */
+.contenedorChat header p {
+    display: none; 
+}
+
+/* Estilo del botón Salir (Restaurado) */
+.contenedorChat header .salir {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    background-color: #ef5350; /* Rojo suave */
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.contenedorChat header .salir:hover {
+    background-color: #d32f2f;
+}
+
+/* =========================================
+   Área de Mensajes
+   ========================================= */
+.chatDeMensajes {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Estilo de la burbuja */
+.chat-message {
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 80%;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+/* Mensajes DE OTROS (Morado) */
+.other-message {
+    background-color: #F3E5F5;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+
+/* MIS Mensajes (Amarillo) */
+.my-message {
+    background-color: #FFF9C4;
+    color: #333;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+/* --- CORRECCIÓN DE FORMATO INTERNO DEL MENSAJE --- */
+
+/* Nombre del usuario (negrita) */
+.message-nickname {
+    font-weight: bold;
+    margin-right: 5px;
+    color: #000;
+    font-size: 0.9em;
+}
+
+/* Hora (pequeña y a la derecha) */
+.message-timestamp {
+    float: right;
+    font-size: 0.7em;
+    color: #888;
+    margin-left: 10px;
+    margin-top: 2px; 
+}
+
+/* El texto del mensaje: IMPORTANTE 'inline' para que no salte de línea */
+.mensajeTexto {
+    display: inline; 
+    color: inherit;
+}
+
+/* Mensajes de sistema (entró/salió) */
+.chat-message.info, .chat-message.warning {
+    background: none;
+    color: #999;
+    font-size: 0.8rem;
+    align-self: center;
+    font-style: italic;
+    padding: 5px;
+    width: 100%;
+    text-align: center;
+}
+
+/* =========================================
+   Formulario (Input y Botón)
+   ========================================= */
+.entradaMensajesForm {
+    padding: 15px 20px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid #f0f0f0;
+}
+
+#mensajeInput {
+    flex-grow: 1;
+    padding: 12px 20px;
+    border: 2px solid #FF7043; /* Borde naranja */
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+    color: #555;
+}
+
+#mensajeInput:focus {
+    box-shadow: 0 0 0 3px rgba(255, 112, 67, 0.2);
+}
+
+button[type="submit"] {
+    background-color: #BDBDBD; /* Botón gris circular */
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 0; /* Ocultar texto */
+    cursor: pointer;
+    transition: background 0.3s;
+    display: flex; /* Flex para centrar la flecha */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Flecha dentro del botón */
+button[type="submit"]::after {
+    content: "➤";
+    font-size: 1.2rem;
+    margin-left: 2px;
+}
+
+button[type="submit"]:hover {
+    background-color: #9E9E9E;
+}
+
+/* =========================================
+   Login (index.html) - Para no romper el inicio
+   ========================================= */
+.contenedor {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+.join-form { display: flex; flex-direction: column; gap: 15px; margin-top: 20px;}
+.join-form input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
+.join-form button { background-color: #FF7043; color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;}

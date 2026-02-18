@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sala de chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class = "contenedor">
+        <h1>Chat</h1>
+        <p class = "etiqueta">
+            {% with messages = get_flashed_messages(with_categories=true)%} <!-- Mostrar mensajes flash -->
+                {% if messages %}
+                    <ul class="flashes">
+                        {% for category, message in messages %} <!--Permite recorrer los mensajes-->
+                            <li class ="{{ category }}">{{ message }}</li> <!--Muestra el mensaje con su categoría-->
+                        {% endfor %}
+                        </ul>
+                {% endif %}
+            {% endwith %}
+
+        </p>
+
+        <form method ='POST' class ="join-form">
+            <label for ="usuario">Nombre de usuario: </label>
+            <input type="text" id="usuario" name="usuario" placeholder="Ej. Charlos" required autofocus>
+            <label for="sala">Sala: </label>
+            <input type="text" id="sala" name="sala" placeholder="Ej. General" required>
+            <button type="submit">Unirse al chat</button>
+        </form>
+
+        <p class="footer">Hecho con Flask y WebSockets</p>
+    </div>
+</body>
+</html>
